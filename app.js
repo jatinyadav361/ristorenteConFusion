@@ -33,6 +33,33 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+function auth(req,res,next) {
+  console.log(req.headers);
+  var authHeader = req.headers.authorization;
+  if(!authHeader) {
+    var error = new Error('You are not authorized to access this.');
+    error.status = 401;
+    res.setHeader('WWW-Authenticate','Basic');
+    return next(error);
+  }
+
+  var auth = new Buffer(authHeader.split(' ')[1],'base64').toString().split(':');
+  var username = auth[0];
+  var password = auth[1];
+  if(username === 'admin' && password === 'password') {
+    next();
+  }
+  else {
+    var error = new Error('You are not authorized to access this.');
+    error.status = 401;
+    res.setHeader('WWW-Authenticate','Basic');
+    return next(error);
+  }
+}
+
+app.use(auth);
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
