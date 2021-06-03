@@ -6,6 +6,9 @@ var logger = require('morgan');
 const session = require('express-session');
 const FileStore = require('session-file-store')(session);
 
+const passport = require('passport');
+const authenticate = require('./authenticate');
+
 const mongoose = require('mongoose');
 
 const url = "mongodb://localhost:27017/conFusion";
@@ -44,27 +47,20 @@ app.use(session({
   store : new FileStore(),
 }));
 
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
 function auth(req,res,next) {
-  console.log(req.session);
-
-  if(!req.session.user) {
+  if(!req.user) {
     var error = new Error('You are not authenticated to access this');
     error.status = 403;
     return next(error);
   }
   else {
-    if(req.session.user === 'authenticated') {
-      next();
-    }
-    else {
-      var error = new Error('You are not authorized to access this');
-      error.status = 403;
-      return next(error);
-    }
+    next();
   }
 }
 
