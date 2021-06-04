@@ -10,7 +10,7 @@ var router = express.Router();
 router.use(bodyParser.json());
 
 /* GET users listing. */
-router.get('/', function(req, res, next) {
+router.get('/', authenticate.verifyUser, authenticate.verifyAdmin, function(req, res, next) {
   User.find({})
   .then((users) => {
     res.statusCode = 200;
@@ -57,10 +57,9 @@ router.post('/signup', (req,res,next) => {
 
 router.post('/login', passport.authenticate('local') , (req,res) => {
   // This method or callback is called if the user is successfully authenticated and user is available as req.user
-  
   var token = authenticate.getToken({_id : req.user._id});
   res.statusCode = 200;
-  res.setHeader('Content-Type','text/plain');
+  res.setHeader('Content-Type','application/json');
   res.json({success : true,token : token, status : "Logged in successfully!"});
 });
 
