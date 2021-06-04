@@ -1,6 +1,7 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var passport = require('passport');
+var authenticate = require('../authenticate');
 
 var User = require('../models/user');
 
@@ -40,9 +41,11 @@ router.post('/signup', (req,res,next) => {
 
 router.post('/login', passport.authenticate('local') , (req,res) => {
   // This method or callback is called if the user is successfully authenticated and user is available as req.user
+  
+  var token = authenticate.getToken({_id : req.user._id});
   res.statusCode = 200;
   res.setHeader('Content-Type','text/plain');
-  res.json({success : true, status : "Logged in successfully!"});
+  res.json({success : true,token : token, status : "Logged in successfully!"});
 });
 
 router.get('/logout', (req,res,next) => {
