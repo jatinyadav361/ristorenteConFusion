@@ -31,6 +31,19 @@ var leaderRouter = require('./routes/leaderRouter');
 
 var app = express();
 
+// Secure traffic only
+app.all('*', (req,res,next) => {
+  if(req.secure) {
+    return next();
+  }
+  else {
+    // redirect unsecure traffic to the secure server
+    // status code sent is 307, which is temporary redirect and it tells the user agent to must not change the 
+    // request method if it performs an automatic redirection to that uri
+    res.redirect(307,'https://'+req.hostname+':'+app.get('secPort')+req.url);
+  }
+});
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
