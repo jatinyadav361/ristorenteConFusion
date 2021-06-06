@@ -30,6 +30,7 @@ var promoRouter = require('./routes/promotionRouter');
 var leaderRouter = require('./routes/leaderRouter');
 var uploadRouter = require('./routes/uploadRouter');
 var favoritesRouter = require('./routes/favoriteRouter');
+var commentsRouter = require('./routes/commentRouter');
 
 var app = express();
 
@@ -68,6 +69,7 @@ app.use('/leaders',leaderRouter);
 app.use('/promotions',promoRouter);
 app.use('/imageUpload',uploadRouter);
 app.use('/favorites',favoritesRouter);
+app.use('/comments', commentsRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
