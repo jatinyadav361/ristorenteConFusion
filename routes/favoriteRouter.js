@@ -10,6 +10,7 @@ var favoriteRouter = express.Router();
 favoriteRouter.use(bodyParser.json());
 
 favoriteRouter.route('/')
+.options(cors.corsWithOptions, (req,res)=> {res.sendStatus(200)})
 .get(cors.corsWithOptions,authenticate.verifyUser ,(req,res,next) => {
     Favorites.findOne({user : req.user._id})
     .populate('dishes')
@@ -86,6 +87,7 @@ favoriteRouter.route('/')
 });
 
 favoriteRouter.route('/:dishId')
+.options(cors.corsWithOptions, (req,res)=> {res.sendStatus(200)})
 .get(cors.corsWithOptions, authenticate.verifyUser, (req,res,next) => {
     Favorites.findOne({user : req.user._id})
     .populate('user')
@@ -115,6 +117,8 @@ favoriteRouter.route('/:dishId')
     .then((dish) => {
         if(dish) {
             Favorites.findOne({user : req.user._id})
+            .populate('dishes')
+            .populate('user')
             .then((fav) => {
                 if(fav) {
                     if(fav.dishes.indexOf(req.params.dishId) == -1) {
@@ -134,7 +138,7 @@ favoriteRouter.route('/:dishId')
                     else {
                         res.statusCode = 200;
                         res.setHeader('Content-Type','application/json');
-                        res.json({status : "This dish is already added to your favorites!"});
+                        res.json(fav);
                     }
                 }
                 else {

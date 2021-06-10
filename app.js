@@ -13,7 +13,7 @@ const authenticate = require('./authenticate');
 const mongoose = require('mongoose');
 
 const url = config.mongoUrl;
-const connect = mongoose.connect(url);
+const connect = mongoose.connect(url,{useNewUrlParser: true,useUnifiedTopology: true,useFindAndModify: false});
 
 connect.then((db) => {
   console.log("successfully started the mongodb server");
@@ -21,7 +21,6 @@ connect.then((db) => {
   console.log(err);
 })
 .catch((err) => console.log(err));
-
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -31,21 +30,24 @@ var leaderRouter = require('./routes/leaderRouter');
 var uploadRouter = require('./routes/uploadRouter');
 var favoritesRouter = require('./routes/favoriteRouter');
 var commentsRouter = require('./routes/commentRouter');
+var cartRouter = require('./routes/cartRouter');
+var ordersRouter = require('./routes/ordersRouter');
+var feedbackRouter = require('./routes/feedbackRouter');
 
 var app = express();
 
 // Secure traffic only
-app.all('*', (req,res,next) => {
-  if(req.secure) {
-    return next();
-  }
-  else {
-    // redirect unsecure traffic to the secure server
-    // status code sent is 307, which is temporary redirect and it tells the user agent to must not change the 
-    // request method if it performs an automatic redirection to that uri
-    res.redirect(307,'https://'+req.hostname+':'+app.get('secPort')+req.url);
-  }
-});
+// app.all('*', (req,res,next) => {
+//   if(req.secure) {
+//     return next();
+//   }
+//   else {
+//     // redirect unsecure traffic to the secure server
+//     // status code sent is 307, which is temporary redirect and it tells the user agent to must not change the 
+//     // request method if it performs an automatic redirection to that uri
+//     res.redirect(307,'https://'+req.hostname+':'+app.get('secPort')+req.url);
+//   }
+// });
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -62,6 +64,10 @@ app.use(passport.initialize());
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
+if(process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname,'confusion/build')));
+}
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/dishes',dishRouter);
@@ -70,6 +76,9 @@ app.use('/promotions',promoRouter);
 app.use('/imageUpload',uploadRouter);
 app.use('/favorites',favoritesRouter);
 app.use('/comments', commentsRouter);
+app.use('/cart', cartRouter);
+app.use('/orders', ordersRouter);
+app.use('/feedback',feedbackRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

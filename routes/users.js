@@ -67,18 +67,18 @@ router.post('/login', cors.corsWithOptions, (req,res,next) => {
     if(!user) {
       res.statusCode = 401;
       res.setHeader('Content-Type','application/json');
-      res.json({status : "Login unsuccessful!", success : false, err : info});
+      return res.json({status : "Login unsuccessful!", success : false, err : info});
     }
     req.logIn(user, (err) => {
       if(err) {
         res.statusCode = 401;
         res.setHeader('Content-Type','application/json');
-        res.json({status : "Login unsuccessful!", success : false, err : err});
+        return res.json({status : "Login unsuccessful!", success : false, err : err});
       }
       var token = authenticate.getToken({_id : req.user._id});
       res.statusCode = 200;
       res.setHeader('Content-Type','application/json');
-      res.json({success : true, token : token, status : "Login successful!"});
+      return res.json({success : true, token : token, status : "Login successful!"});
     })
   }) (req,res,next);
 });
