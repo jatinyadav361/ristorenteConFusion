@@ -36,6 +36,15 @@ var feedbackRouter = require('./routes/feedbackRouter');
 
 var app = express();
 
+if(process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname,'confusion/build')));
+}
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.get('*', function (request, response){
+  response.sendFile(path.resolve(__dirname, 'confusion/build' ,'index.html'))
+})
+
 // Secure traffic only
 // app.all('*', (req,res,next) => {
 //   if(req.secure) {
@@ -61,13 +70,8 @@ app.use(express.urlencoded({ extended: false }));
 // passport.initialize() middleware is required to initialize Passport
 app.use(passport.initialize());
 
-app.use('/', indexRouter);
+// app.use('/', indexRouter);
 app.use('/users', usersRouter);
-
-if(process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname,'confusion/build')));
-}
-app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/dishes',dishRouter);
 app.use('/leaders',leaderRouter);
