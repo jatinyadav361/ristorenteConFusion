@@ -62,17 +62,17 @@ app.use(express.urlencoded({ extended: false }));
 app.use(passport.initialize());
 
 // app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('apis/users', usersRouter);
 
-app.use('/dishes',dishRouter);
-app.use('/leaders',leaderRouter);
-app.use('/promotions',promoRouter);
-app.use('/imageUpload',uploadRouter);
-app.use('/favorites',favoritesRouter);
-app.use('/comments', commentsRouter);
-app.use('/cart', cartRouter);
-app.use('/orders', ordersRouter);
-app.use('/feedback',feedbackRouter);
+app.use('apis/dishes',dishRouter);
+app.use('apis/leaders',leaderRouter);
+app.use('apis/promotions',promoRouter);
+app.use('apis/imageUpload',uploadRouter);
+app.use('apis/favorites',favoritesRouter);
+app.use('apis/comments', commentsRouter);
+app.use('apis/cart', cartRouter);
+app.use('apis/orders', ordersRouter);
+app.use('apis/feedback',feedbackRouter);
 
 
 if(process.env.NODE_ENV === 'production') {

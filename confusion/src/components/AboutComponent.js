@@ -14,7 +14,7 @@ function RenderLeader({leader}) {
             <Media body>
                 <Media heading>{leader.name}</Media>
                 <h6>{leader.designation}</h6>
-                {leader.description}
+                <span className="d-none d-sm-block" >{leader.description}</span>
             </Media>
         </Media>
     );
