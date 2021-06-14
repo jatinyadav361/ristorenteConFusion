@@ -36,15 +36,6 @@ var feedbackRouter = require('./routes/feedbackRouter');
 
 var app = express();
 
-if(process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname,'confusion/build')));
-}
-app.use(express.static(path.join(__dirname, 'public')));
-
-app.get('*', function (request, response){
-  response.sendFile(path.resolve(__dirname, 'confusion/build' ,'index.html'))
-})
-
 // Secure traffic only
 // app.all('*', (req,res,next) => {
 //   if(req.secure) {
@@ -82,6 +73,16 @@ app.use('/comments', commentsRouter);
 app.use('/cart', cartRouter);
 app.use('/orders', ordersRouter);
 app.use('/feedback',feedbackRouter);
+
+
+if(process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname,'confusion/build')));
+}
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.get('*', function (request, response){
+  response.sendFile(path.resolve(__dirname, 'confusion/build' ,'index.html'))
+})
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
