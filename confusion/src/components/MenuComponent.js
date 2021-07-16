@@ -23,7 +23,7 @@ function MenuComponentDishItem({dish,favorite}) {
 const Menu = (props) => {
     const menu = props.dishes.dishes.map((dish) => {
         return (
-            <div className="col-12 col-md-5 m-1" key={dish._id}>
+            <div className="col-12 col-md-5 mr-1 mt-1 mb-1" key={dish._id}>
                 <MenuComponentDishItem dish={dish} favorite={props.favorites.favorites != null 
                     ? props.favorites.favorites.dishes.some((qDish) => qDish._id === dish._id) 
                     : false}/>
